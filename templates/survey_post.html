@@ -6,19 +6,44 @@
   <form method="POST" action="/survey">
     <input type="hidden" name="action" value="post_survey">
 
-    <!-- Age — slider for precise age -->
-    <label>1. What is your age?</label>
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
-      <input type="range" id="ageSlider" min="18" max="80"
-  style="flex:1;height:8px;cursor:pointer;accent-color:var(--blue);opacity:0.3;"
-  oninput="setAge(this.value)">
+   <!-- Age — custom slider like confidence — NO default position -->
+<label>1. What is your age?</label>
 <input type="hidden" id="ageHidden" name="age" value="">
-<span id="ageVal" style="font-size:22px;font-weight:bold;
-                           color:var(--blue);min-width:40px;">—</span>
-    </div>
-    <div id="ageWarn" style="color:var(--red);font-size:13px;
-                          margin-top:4px;display:none;">
-  ⚠ Please drag the slider to select your age.
+<div style="display:flex;justify-content:space-between;font-size:11px;
+            color:var(--muted);margin-bottom:8px;padding:0 2px;">
+  <span>18</span><span>25</span><span>32</span><span>39</span><span>46</span>
+  <span>53</span><span>60</span><span>67</span><span>74</span><span>80</span>
+</div>
+<div id="ageTrack"
+  style="position:relative;height:20px;background:#E2E8F0;border-radius:99px;
+         cursor:pointer;user-select:none;-webkit-user-select:none;margin-bottom:8px;"
+  onmousedown="startAgeDrag(event)" ontouchstart="startAgeTouch(event)">
+  <div id="ageFill" style="position:absolute;left:0;top:0;height:100%;
+       width:0%;background:#94A3B8;border-radius:99px;pointer-events:none;"></div>
+  <div id="ageKnob" style="position:absolute;top:50%;width:26px;height:26px;
+       background:white;border:3px solid #94A3B8;border-radius:50%;
+       transform:translate(-50%,-50%);left:0%;display:none;
+       pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:11px;
+            color:var(--muted);margin-bottom:8px;">
+  <span>Younger</span><span>Older</span>
+</div>
+<div id="ageDisplay" style="display:none;padding:14px;background:var(--gray);
+     border-radius:10px;text-align:center;margin-bottom:8px;">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:4px;
+              text-transform:uppercase;letter-spacing:1px;">Your Age</div>
+  <span id="ageVal" style="font-size:48px;font-weight:bold;color:#64748B;
+                            line-height:1;"></span>
+</div>
+<div id="agePrompt" style="padding:14px;background:var(--gray);border-radius:10px;
+     text-align:center;color:var(--muted);font-size:14px;
+     border:2px dashed var(--border);margin-bottom:8px;">
+  ☝ Click or drag the bar above to select your age
+</div>
+<div id="ageWarn" style="color:var(--red);font-size:13px;
+                          margin-bottom:16px;display:none;">
+  ⚠ Please select your age before continuing.
 </div>
 
     <label>2. What is your gender?</label>
