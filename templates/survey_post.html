@@ -160,45 +160,99 @@
   </form>
 </div>
 <script>
+<script>
 var ageTouched = false;
 var mcTouched  = false;
 
-function setAge(val){
+// ── AGE CUSTOM SLIDER ─────────────────────────────────────────────
+function setAge(pct){
+  pct = Math.max(0, Math.min(100, pct));
+  // Convert pct to age value 18-80
+  var age = Math.round(18 + (pct/100) * (80-18));
   ageTouched = true;
-  document.getElementById('ageHidden').value = val;
-  document.getElementById('ageVal').textContent = val;
-  document.getElementById('ageSlider').style.opacity = '1';
+  document.getElementById('ageHidden').value = age;
+  document.getElementById('ageFill').style.width = pct + '%';
+  var k = document.getElementById('ageKnob');
+  k.style.display = 'block'; k.style.left = pct + '%';
+  document.getElementById('agePrompt').style.display = 'none';
+  document.getElementById('ageDisplay').style.display = 'block';
+  document.getElementById('ageVal').textContent = age;
   document.getElementById('ageWarn').style.display = 'none';
 }
+function getAgePct(cx){
+  var r = document.getElementById('ageTrack').getBoundingClientRect();
+  return ((cx - r.left) / r.width) * 100;
+}
+function startAgeDrag(e){
+  e.preventDefault(); setAge(getAgePct(e.clientX));
+  function mv(e){ setAge(getAgePct(e.clientX)); }
+  function up(){ document.removeEventListener('mousemove',mv);
+    document.removeEventListener('mouseup',up); }
+  document.addEventListener('mousemove',mv);
+  document.addEventListener('mouseup',up);
+}
+function startAgeTouch(e){
+  e.preventDefault(); setAge(getAgePct(e.touches[0].clientX));
+  var tr = document.getElementById('ageTrack');
+  function mv(e){ setAge(getAgePct(e.touches[0].clientX)); }
+  function en(){ tr.removeEventListener('touchmove',mv);
+    tr.removeEventListener('touchend',en); }
+  tr.addEventListener('touchmove',mv,{passive:false});
+  tr.addEventListener('touchend',en);
+}
 
-document.getElementById('ageSlider').addEventListener('input', function(){
-  setAge(this.value);
-});
-
-document.getElementById('mcSlider').addEventListener('input', function(){
+// ── MANIPULATION CHECK CUSTOM SLIDER ─────────────────────────────
+function setMc(pct){
+  pct = Math.max(0, Math.min(100, pct));
+  // Convert pct to 1-7 value
+  var val = Math.round(1 + (pct/100) * 6);
   mcTouched = true;
-  document.getElementById('mcHidden').value = this.value;
-  document.getElementById('mcVal').textContent = this.value;
-  document.getElementById('mcSlider').style.opacity = '1';
+  document.getElementById('mcHidden').value = val;
+  document.getElementById('mcFill').style.width = pct + '%';
+  var k = document.getElementById('mcKnob');
+  k.style.display = 'block'; k.style.left = pct + '%';
+  document.getElementById('mcPrompt').style.display = 'none';
+  document.getElementById('mcDisplay').style.display = 'block';
+  document.getElementById('mcVal').textContent = val;
+  document.getElementById('mcBar').style.width = ((val-1)/6*100) + '%';
   document.getElementById('mcWarn').style.display = 'none';
-});
+}
+function getMcPct(cx){
+  var r = document.getElementById('mcTrack').getBoundingClientRect();
+  return ((cx - r.left) / r.width) * 100;
+}
+function startMcDrag(e){
+  e.preventDefault(); setMc(getMcPct(e.clientX));
+  function mv(e){ setMc(getMcPct(e.clientX)); }
+  function up(){ document.removeEventListener('mousemove',mv);
+    document.removeEventListener('mouseup',up); }
+  document.addEventListener('mousemove',mv);
+  document.addEventListener('mouseup',up);
+}
+function startMcTouch(e){
+  e.preventDefault(); setMc(getMcPct(e.touches[0].clientX));
+  var tr = document.getElementById('mcTrack');
+  function mv(e){ setMc(getMcPct(e.touches[0].clientX)); }
+  function en(){ tr.removeEventListener('touchmove',mv);
+    tr.removeEventListener('touchend',en); }
+  tr.addEventListener('touchmove',mv,{passive:false});
+  tr.addEventListener('touchend',en);
+}
 
-// Override form submit to validate both sliders
+// ── FORM VALIDATION ───────────────────────────────────────────────
 document.querySelector('form').addEventListener('submit', function(e){
   var ok = true;
   if(!ageTouched){
     document.getElementById('ageWarn').style.display = 'block';
+    document.getElementById('ageTrack').scrollIntoView({behavior:'smooth'});
     ok = false;
   }
   if(!mcTouched){
     document.getElementById('mcWarn').style.display = 'block';
+    if(ok) document.getElementById('mcTrack').scrollIntoView({behavior:'smooth'});
     ok = false;
   }
   if(!ok) e.preventDefault();
 });
-</script>
-// Make manipulation check mandatory — must move it
-var mcSlider = document.getElementById('mcSlider');
-mcSlider.removeAttribute('value');
 </script>
 {% endblock %}
