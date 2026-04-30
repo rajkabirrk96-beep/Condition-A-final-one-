@@ -165,6 +165,108 @@ var ageTouched = false;
 var mcTouched  = false;
 
 // ── AGE CUSTOM SLIDER ─────────────────────────────────────────────
+function setAge(cx){
+  var track = document.getElementById('ageTrack');
+  var r = track.getBoundingClientRect();
+  var pct = Math.max(0, Math.min(100, ((cx - r.left) / r.width) * 100));
+  var age = Math.round(18 + (pct / 100) * (80 - 18));
+  ageTouched = true;
+  document.getElementById('ageHidden').value = age;
+  document.getElementById('ageFill').style.width = pct + '%';
+  var k = document.getElementById('ageKnob');
+  k.style.display = 'block';
+  k.style.left = pct + '%';
+  document.getElementById('agePrompt').style.display = 'none';
+  document.getElementById('ageDisplay').style.display = 'block';
+  document.getElementById('ageVal').textContent = age;
+  document.getElementById('ageWarn').style.display = 'none';
+}
+
+function startAgeDrag(e){
+  e.preventDefault();
+  setAge(e.clientX);
+  function mv(e){ setAge(e.clientX); }
+  function up(){
+    document.removeEventListener('mousemove', mv);
+    document.removeEventListener('mouseup', up);
+  }
+  document.addEventListener('mousemove', mv);
+  document.addEventListener('mouseup', up);
+}
+
+function startAgeTouch(e){
+  e.preventDefault();
+  setAge(e.touches[0].clientX);
+  function mv(e){ setAge(e.touches[0].clientX); }
+  function en(){
+    document.removeEventListener('touchmove', mv);
+    document.removeEventListener('touchend', en);
+  }
+  document.addEventListener('touchmove', mv, {passive:false});
+  document.addEventListener('touchend', en);
+}
+
+// ── MANIPULATION CHECK CUSTOM SLIDER ─────────────────────────────
+function setMc(cx){
+  var track = document.getElementById('mcTrack');
+  var r = track.getBoundingClientRect();
+  var pct = Math.max(0, Math.min(100, ((cx - r.left) / r.width) * 100));
+  var val = Math.round(1 + (pct / 100) * 6);
+  mcTouched = true;
+  document.getElementById('mcHidden').value = val;
+  document.getElementById('mcFill').style.width = pct + '%';
+  var k = document.getElementById('mcKnob');
+  k.style.display = 'block';
+  k.style.left = pct + '%';
+  document.getElementById('mcPrompt').style.display = 'none';
+  document.getElementById('mcDisplay').style.display = 'block';
+  document.getElementById('mcVal').textContent = val;
+  document.getElementById('mcBar').style.width = ((val-1)/6*100) + '%';
+  document.getElementById('mcWarn').style.display = 'none';
+}
+
+function startMcDrag(e){
+  e.preventDefault();
+  setMc(e.clientX);
+  function mv(e){ setMc(e.clientX); }
+  function up(){
+    document.removeEventListener('mousemove', mv);
+    document.removeEventListener('mouseup', up);
+  }
+  document.addEventListener('mousemove', mv);
+  document.addEventListener('mouseup', up);
+}
+
+function startMcTouch(e){
+  e.preventDefault();
+  setMc(e.touches[0].clientX);
+  function mv(e){ setMc(e.touches[0].clientX); }
+  function en(){
+    document.removeEventListener('touchmove', mv);
+    document.removeEventListener('touchend', en);
+  }
+  document.addEventListener('touchmove', mv, {passive:false});
+  document.addEventListener('touchend', en);
+}
+
+// ── FORM VALIDATION ───────────────────────────────────────────────
+document.querySelector('form').addEventListener('submit', function(e){
+  var ok = true;
+  if(!ageTouched){
+    document.getElementById('ageWarn').style.display = 'block';
+    document.getElementById('ageTrack').scrollIntoView({behavior:'smooth'});
+    ok = false;
+  }
+  if(!mcTouched){
+    document.getElementById('mcWarn').style.display = 'block';
+    if(ok) document.getElementById('mcTrack').scrollIntoView({behavior:'smooth'});
+    ok = false;
+  }
+  if(!ok) e.preventDefault();
+});
+</script>
+
+// ── AGE CUSTOM SLIDER ─────────────────────────────────────────────
 function setAge(pct){
   pct = Math.max(0, Math.min(100, pct));
   // Convert pct to age value 18-80
