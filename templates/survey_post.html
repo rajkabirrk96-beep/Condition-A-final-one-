@@ -80,16 +80,14 @@
                 color:var(--muted);margin-bottom:8px;">
       <span>1 — Strongly disagree</span><span>7 — Strongly agree</span>
     </div>
-    <input type="range" id="mcSlider" name="manipulation_check"
-      min="1" max="7"
-      style="width:100%;height:8px;cursor:pointer;accent-color:var(--blue);
-             margin-bottom:8px;"
-      oninput="document.getElementById('mcVal').textContent=this.value"
-      required>
-    <div style="text-align:center;margin-bottom:20px;">
-      <span id="mcVal" style="font-size:22px;font-weight:bold;color:var(--blue);">
-        — </span><span style="color:var(--muted);"> / 7</span>
-    </div>
+    <input type="range" id="mcSlider" min="1" max="7"
+  style="width:100%;height:8px;cursor:pointer;accent-color:var(--blue);
+         margin-bottom:8px;opacity:0.3;">
+<input type="hidden" id="mcHidden" name="manipulation_check" value="">
+<div style="text-align:center;margin-bottom:20px;">
+  <span id="mcVal" style="font-size:22px;font-weight:bold;color:var(--blue);">
+    —</span><span style="color:var(--muted);"> / 7</span>
+</div>
 
     <label>8. Please describe in your own words how you made your investment
       allocation decisions.</label>
@@ -103,12 +101,43 @@
   </form>
 </div>
 <script>
-// Make age slider mandatory — must move it
-var ageSlider = document.getElementById('ageSlider');
-ageSlider.value = '';
-ageSlider.addEventListener('input', function(){
-  document.getElementById('ageVal').textContent = this.value;
+var ageTouched = false;
+var mcTouched  = false;
+
+function setAge(val){
+  ageTouched = true;
+  document.getElementById('ageHidden').value = val;
+  document.getElementById('ageVal').textContent = val;
+  document.getElementById('ageSlider').style.opacity = '1';
+  document.getElementById('ageWarn').style.display = 'none';
+}
+
+document.getElementById('ageSlider').addEventListener('input', function(){
+  setAge(this.value);
 });
+
+document.getElementById('mcSlider').addEventListener('input', function(){
+  mcTouched = true;
+  document.getElementById('mcHidden').value = this.value;
+  document.getElementById('mcVal').textContent = this.value;
+  document.getElementById('mcSlider').style.opacity = '1';
+  document.getElementById('mcWarn').style.display = 'none';
+});
+
+// Override form submit to validate both sliders
+document.querySelector('form').addEventListener('submit', function(e){
+  var ok = true;
+  if(!ageTouched){
+    document.getElementById('ageWarn').style.display = 'block';
+    ok = false;
+  }
+  if(!mcTouched){
+    document.getElementById('mcWarn').style.display = 'block';
+    ok = false;
+  }
+  if(!ok) e.preventDefault();
+});
+</script>
 // Make manipulation check mandatory — must move it
 var mcSlider = document.getElementById('mcSlider');
 mcSlider.removeAttribute('value');
