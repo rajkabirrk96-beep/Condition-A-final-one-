@@ -95,24 +95,57 @@
       <option>Yes</option><option>No</option><option>Not sure</option>
     </select>
 
-    <!-- Manipulation check — no default, mandatory -->
-    <label>7. The AI recommendation seemed to reflect knowledge of my personal
-      investment history and preferences.
-      <span style="font-weight:normal;color:var(--muted);">
-        (1 = Strongly disagree, 7 = Strongly agree)
-      </span>
-    </label>
-    <div style="display:flex;justify-content:space-between;font-size:13px;
-                color:var(--muted);margin-bottom:8px;">
-      <span>1 — Strongly disagree</span><span>7 — Strongly agree</span>
-    </div>
-    <input type="range" id="mcSlider" min="1" max="7"
-  style="width:100%;height:8px;cursor:pointer;accent-color:var(--blue);
-         margin-bottom:8px;opacity:0.3;">
+  <!-- Manipulation check — custom slider like confidence — NO default -->
+<label>7. The AI recommendation seemed to reflect knowledge of my personal
+  investment history and preferences.
+  <span style="font-weight:normal;color:var(--muted);">
+    (1 = Strongly disagree, 7 = Strongly agree)
+  </span>
+</label>
 <input type="hidden" id="mcHidden" name="manipulation_check" value="">
+<div style="display:flex;justify-content:space-between;font-size:11px;
+            color:var(--muted);margin-bottom:8px;padding:0 2px;">
+  <span>1</span><span>2</span><span>3</span><span>4</span>
+  <span>5</span><span>6</span><span>7</span>
+</div>
+<div id="mcTrack"
+  style="position:relative;height:20px;background:#E2E8F0;border-radius:99px;
+         cursor:pointer;user-select:none;-webkit-user-select:none;margin-bottom:8px;"
+  onmousedown="startMcDrag(event)" ontouchstart="startMcTouch(event)">
+  <div id="mcFill" style="position:absolute;left:0;top:0;height:100%;
+       width:0%;background:#94A3B8;border-radius:99px;pointer-events:none;"></div>
+  <div id="mcKnob" style="position:absolute;top:50%;width:26px;height:26px;
+       background:white;border:3px solid #94A3B8;border-radius:50%;
+       transform:translate(-50%,-50%);left:0%;display:none;
+       pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:11px;
+            color:var(--muted);margin-bottom:8px;">
+  <span>Strongly disagree</span><span>Strongly agree</span>
+</div>
+<div id="mcPrompt" style="padding:14px;background:var(--gray);border-radius:10px;
+     text-align:center;color:var(--muted);font-size:14px;
+     border:2px dashed var(--border);margin-bottom:8px;">
+  ☝ Click or drag the bar above to rate your agreement
+</div>
+<div id="mcDisplay" style="display:none;padding:14px;background:var(--gray);
+     border-radius:10px;text-align:center;margin-bottom:8px;">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:4px;
+              text-transform:uppercase;letter-spacing:1px;">Your Rating</div>
+  <div style="display:flex;align-items:baseline;justify-content:center;gap:4px;">
+    <span id="mcVal" style="font-size:48px;font-weight:bold;
+                              line-height:1;color:#64748B;"></span>
+    <span style="font-size:20px;color:#64748B;">/ 7</span>
+  </div>
+  <div style="margin-top:10px;background:var(--border);border-radius:99px;
+              height:10px;overflow:hidden;">
+    <div id="mcBar" style="height:100%;width:0%;background:#94A3B8;
+                            border-radius:99px;transition:width 0.2s;"></div>
+  </div>
+</div>
 <div id="mcWarn" style="color:var(--red);font-size:13px;
-                         margin-top:4px;display:none;">
-  ⚠ Please drag the slider to select your response.
+                         margin-bottom:16px;display:none;">
+  ⚠ Please rate your agreement before continuing.
 </div>
 
     <label>8. Please describe in your own words how you made your investment
